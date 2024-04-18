@@ -1,10 +1,8 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_search_app/data/api.dart';
+import 'package:image_search_app/data/photo_provider.dart';
 import 'package:image_search_app/ui/widget/photo_widget.dart';
 import '../model/Photo.dart';
-import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,6 +12,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // final api = PixabayAPI(); //바람직 하지 않은 방식
+
   final _controller = TextEditingController(); //에딧 텍스트의 값을 얻아올 수 있는 Controller
   List<Photo> _photos = [];
 
@@ -23,17 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  Future<List<Photo>> fetch(String query) async {
-    final String url =
-        'https://pixabay.com/api/?key=17159641-1bf10cc7b7513d39c89bb809d&q=$query&image_type=photo&pretty=true';
-    final response = await http.get(Uri.parse(url));
-    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-    Iterable hits = jsonResponse['hits']; //아직은 Map 형태
-    return hits.map((e) => Photo.fromJson(e)).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final PixabayAPI api = PhotoProvider.of(context).api;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true, //가운데 정렬
@@ -53,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 suffixIcon: IconButton(
                   onPressed: () async {
-                    final photos = await fetch(_controller.text);
+                    final photos = await api.fetch(_controller.text);
                     setState(() {
                       _photos = photos;
                     });
@@ -65,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: GridView.builder(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               itemCount: _photos.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, // 몇 열로 구성하는 지
@@ -76,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final Photo photo = _photos[index];
                 return PhotoWidget(
                   photo: photo,
+                  api: api,
                 );
               },
             ),
