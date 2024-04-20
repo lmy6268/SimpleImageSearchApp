@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final photoProvider = PhotoProvider.of(context);
+    final homeViewModel = PhotoProvider.of(context).homeViewModel;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true, //가운데 정렬
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 suffixIcon: IconButton(
                   onPressed: () async {
-                    photoProvider.fetch(_controller.text);
+                    homeViewModel.fetch(_controller.text);
                   },
                   icon: const Icon(Icons.search),
                 ),
@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           StreamBuilder<List<Photo>>(
-              stream: photoProvider.photoStream,
+              stream: homeViewModel.photoStream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return const CircularProgressIndicator();
                 final photos = snapshot.data!;
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       final Photo photo = photos[index];
                       return PhotoWidget(
                         photo: photo,
-                        api: photoProvider.api,
+                        api: homeViewModel.api,
                       );
                     },
                   ),

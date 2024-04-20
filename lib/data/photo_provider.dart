@@ -1,21 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:image_search_app/data/api.dart';
 
-import '../model/Photo.dart';
+import '../ui/home_view_model.dart';
 
 /// InheritedWidget 객체는 내부에 불변객체만 담을 수 있도록 설계되어 있다.
 class PhotoProvider extends InheritedWidget {
-  final PixabayAPI api;
+  final HomeViewModel homeViewModel;
 
-  PhotoProvider({super.key, required super.child, required this.api});
-
-//내부적으로 사용
-  final _photoStreamController = StreamController<List<Photo>>()..add([]); //객체 생성 시, 특정 메소드를 실행한 이후의 결과값을 저장할 떄 .. 을 이용한다.
-
-  //외부에서는 이 컨트롤러를 통해 데이터 상태의 변화를 감지한다.
-  Stream<List<Photo>> get photoStream => _photoStreamController.stream;
+  const PhotoProvider(this.homeViewModel, {super.key, required super.child});
 
   /// of 메소드를 통해 어디서든  PhotoProvider를 제공받을 수 있도록 한다 .
   static PhotoProvider of(BuildContext context) {
@@ -30,12 +22,6 @@ class PhotoProvider extends InheritedWidget {
   // [covariant] : 이름을 마음대로 바꿔도 된다는 의미의 키워드
   @override
   bool updateShouldNotify(PhotoProvider oldWidget) {
-    return oldWidget.api != api;
-  }
-
-  //Async이기 때문에 결과값은 Future 클래스의 인스턴스로 반환된다.
-  Future<void> fetch(String query) async {
-    final result = await api.fetch(query);
-    _photoStreamController.add(result);
+    return true;
   }
 }
