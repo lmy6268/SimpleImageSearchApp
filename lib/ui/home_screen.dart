@@ -15,7 +15,6 @@ class _HomeScreenState extends State<HomeScreen> {
   // final api = PixabayAPI(); //바람직 하지 않은 방식
 
   final _controller = TextEditingController(); //에딧 텍스트의 값을 얻아올 수 있는 Controller
-  List<Photo> _photos = [];
 
   @override
   void dispose() {
@@ -25,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final PixabayAPI api = PhotoProvider.of(context).api;
+    final photoProvider = PhotoProvider.of(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true, //가운데 정렬
@@ -45,34 +44,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 suffixIcon: IconButton(
                   onPressed: () async {
-                    final photos = await api.fetch(_controller.text);
-                    setState(() {
-                      _photos = photos;
-                    });
+                    photoProvider.fetch(_controller.text);
                   },
                   icon: const Icon(Icons.search),
                 ),
               ),
             ),
           ),
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _photos.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // 몇 열로 구성하는 지
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemBuilder: (buildContext, index) {
-                final Photo photo = _photos[index];
-                return PhotoWidget(
-                  photo: photo,
-                  api: api,
+          StreamBuilder<List<Photo>>(
+              stream: photoProvider.photoStream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const CircularProgressIndicator();
+                final photos = snapshot.data!;
+                //우리가 활용할 데이터는 Snapshot을 통해 들어온다.
+
+                return Expanded(
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: photos.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // 몇 열로 구성하는 지
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemBuilder: (buildContext, index) {
+                      final Photo photo = photos[index];
+                      return PhotoWidget(
+                        photo: photo,
+                        api: photoProvider.api,
+                      );
+                    },
+                  ),
                 );
-              },
-            ),
-          )
+              })
         ],
       ),
     );
