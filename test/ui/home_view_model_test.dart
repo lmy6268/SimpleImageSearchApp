@@ -3,7 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_search_app/data/api.dart';
 import 'package:image_search_app/data/photo_api_repository.dart';
-import 'package:image_search_app/model/Photo.dart';
+import 'package:image_search_app/model/photo.dart';
 import 'package:image_search_app/ui/home_view_model.dart';
 
 void main() {

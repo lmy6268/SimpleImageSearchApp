@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_search_app/data/photo_provider.dart';
 import 'package:image_search_app/ui/widget/photo_widget.dart';
 
-import '../model/Photo.dart';
+import '../model/photo.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
