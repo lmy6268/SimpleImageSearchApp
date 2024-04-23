@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:image_search_app/data/api.dart';
+
 import '../../model/Photo.dart';
 
 class PhotoWidget extends StatelessWidget {
-  final PixabayAPI api;
   const PhotoWidget({
     super.key,
     required this.photo,
-    required this.api
   });
 
   final Photo photo;

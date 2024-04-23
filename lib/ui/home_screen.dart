@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:image_search_app/data/api.dart';
 import 'package:image_search_app/data/photo_provider.dart';
 import 'package:image_search_app/ui/widget/photo_widget.dart';
+
 import '../model/Photo.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // final api = PixabayAPI(); //바람직 하지 않은 방식
 
   final _controller = TextEditingController(); //에딧 텍스트의 값을 얻아올 수 있는 Controller
 
@@ -72,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       final Photo photo = photos[index];
                       return PhotoWidget(
                         photo: photo,
-                        api: homeViewModel.api,
                       );
                     },
                   ),
