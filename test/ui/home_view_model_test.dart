@@ -1,7 +1,6 @@
 //fetch가 제대로 동작하는지 확인
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:image_search_app/data/api.dart';
 import 'package:image_search_app/data/photo_api_repository.dart';
 import 'package:image_search_app/model/photo.dart';
 import 'package:image_search_app/ui/home_view_model.dart';
@@ -16,6 +15,8 @@ void main() {
 
     await viewModel.fetch('apple');
     await viewModel.fetch('apple');
+
+    
     //기대값과 실제값 확인하기
     expect(
         viewModel.photoStream,
