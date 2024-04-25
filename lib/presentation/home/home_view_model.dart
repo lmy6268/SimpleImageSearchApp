@@ -2,18 +2,17 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:image_search_app/data/api.dart';
-import 'package:image_search_app/data/photo_api_repository.dart';
+import 'package:image_search_app/data/repository/photo_api_repository_impl.dart';
+import 'package:image_search_app/domain/repository/photo_api_repository.dart';
 
-import '../model/photo.dart';
+import '../../domain/model/photo.dart';
 
 //with 키워드는 의미상 MixIn 기능을 사용할 때 사용한다. -> 상속이랑 의미가 거의 동일하다.
 class HomeViewModel with ChangeNotifier {
   final PhotoApiRepository repo;
   List<Photo> _photos = [];
-  
-  /// 내부에서만 데이터를 조작할 수 있도록 getter를 만들어준다.
-  ///그냥 [List]로만 선언하면, 외부에서 remove, add, clear 메소드를 적용가능한 문제가 있다.  -> [UnmodifiableListView]를 이용하여 적용하기!! (수정 불가 리스트)
+  ///내부에서만 데이터를 조작할 수 있도록 getter를 만들어준다.
+  ///그냥 [List]로만 선언하면, remove, add, clear 메소드를 적용가능한 문제가 있다.  -> [UnmodifiableListView]를 이용하여 적용하기!! (수정 불가 리스트)
   UnmodifiableListView<Photo> get photos => UnmodifiableListView(_photos);
 
   /// Stream 사용 시

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:image_search_app/data/api.dart';
+import 'package:image_search_app/data/data_source/pixabay_api.dart';
+import 'package:image_search_app/data/repository/photo_api_repository_impl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
@@ -14,16 +15,18 @@ import 'pixabay_api_test.mocks.dart';
 void main() {
   var testText = 'Pixabay 데이터를 잘 가져와야 한다';
   test(testText, () async {
-    final api = PixabayAPI();
     final mockClient = MockClient(); //가짜 객체
+    final api = PhotoApiRepositoryImpl(PixabayApi(mockClient));
+
     const keyword = 'iphone';
     const query =
-        '${PixabayAPI.baseUrl}?key=${PixabayAPI.key}&q=$keyword&image_type=photo';
+        '${PhotoApiRepositoryImpl.baseUrl}?key=${PhotoApiRepositoryImpl.key}&q=$keyword&image_type=photo';
 
     // 테스트 하고 싶은 것은 client.get 동작의 여부
-    when(mockClient.get(Uri.parse(query))).thenAnswer((_) async => http.Response(fakeJsonBody, 200));
+    when(mockClient.get(Uri.parse(query)))
+        .thenAnswer((_) async => http.Response(fakeJsonBody, 200));
 
-    final res = await api.fetch(keyword, client: mockClient); //테스트의 결과값
+    final res = await api.fetch(keyword); //테스트의 결과값
 
     //기댓값과 비교하기
     expect(res.first.id, 8175062);
