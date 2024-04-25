@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:image_search_app/data/photo_provider.dart';
+import 'package:image_search_app/ui/home_view_model.dart';
 import 'package:image_search_app/ui/widget/photo_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../model/photo.dart';
 
@@ -12,7 +13,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   final _controller = TextEditingController(); //에딧 텍스트의 값을 얻아올 수 있는 Controller
 
   @override
@@ -23,7 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final homeViewModel = PhotoProvider.of(context).homeViewModel;
+    // final homeViewModel =  Provider.of<HomeViewModel>(context); //옛날 방식
+    // 요즘 방식
+    // -> 데이터의 변동이 있는지 여부도 확인한다. (지금은 Stream으로 데이터를 제공하고 있어서 watch가 아닌, read로 해도 된다.)
+    final homeViewModel = context.watch<HomeViewModel>();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true, //가운데 정렬
