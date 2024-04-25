@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: Provider(
+        home: ChangeNotifierProvider(
           create: (_) => HomeViewModel(PixabayAPI()),
           child: const HomeScreen(),
         ));

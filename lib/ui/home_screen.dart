@@ -26,7 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // final homeViewModel =  Provider.of<HomeViewModel>(context); //옛날 방식
     // 요즘 방식
     // -> 데이터의 변동이 있는지 여부도 확인한다. (지금은 Stream으로 데이터를 제공하고 있어서 watch가 아닌, read로 해도 된다.)
-    final homeViewModel = context.watch<HomeViewModel>();
+    // final homeViewModel = context.watch<HomeViewModel>();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true, //가운데 정렬
@@ -46,39 +47,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 suffixIcon: IconButton(
                   onPressed: () async {
-                    homeViewModel.fetch(_controller.text);
+                    //한번만 사용할 떄는 read를 쓰면 된다.
+                    context.read<HomeViewModel>().fetch(_controller.text);
                   },
                   icon: const Icon(Icons.search),
                 ),
               ),
             ),
           ),
-          StreamBuilder<List<Photo>>(
-              stream: homeViewModel.photoStream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) return const CircularProgressIndicator();
-                final photos = snapshot.data!;
-                //우리가 활용할 데이터는 Snapshot을 통해 들어온다.
-
-                return Expanded(
-                  child: GridView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: photos.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // 몇 열로 구성하는 지
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemBuilder: (buildContext, index) {
-                      final Photo photo = photos[index];
-                      return PhotoWidget(
-                        photo: photo,
-                      );
-                    },
+          Consumer<HomeViewModel>(
+            builder: (_, homeViewModel, child) {
+              return Expanded(
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: homeViewModel.photos.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // 몇 열로 구성하는 지
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
                   ),
-                );
-              })
+                  itemBuilder: (buildContext, index) {
+                    final Photo photo = homeViewModel.photos[index];
+                    return PhotoWidget(
+                      photo: photo,
+                    );
+                  },
+                ),
+              );
+            },
+          )
         ],
       ),
     );

@@ -14,17 +14,9 @@ void main() {
     final res = fakeJson.map((e) => Photo.fromJson(e)).toList();
 
     await viewModel.fetch('apple');
-    await viewModel.fetch('apple');
 
-    
     //기대값과 실제값 확인하기
-    expect(
-        viewModel.photoStream,
-        emitsInOrder([
-          equals([]),
-          equals(res),
-          equals(res),
-        ]));
+    expect(viewModel.photos, res);
   });
 }
 
