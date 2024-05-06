@@ -41,6 +41,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-/lib/model/*.freezed.dart
-/lib/model/*.g.dart
-/test/data/*.mocks.dart
+
+# Code by Code Generator
+*.freezed.dart
+*.g.dart
+*.mocks.dart
+

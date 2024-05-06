@@ -1,6 +1,7 @@
 //fetch가 제대로 동작하는지 확인
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_search_app/data/data_source/result.dart';
 import 'package:image_search_app/domain/repository/photo_api_repository.dart';
 import 'package:image_search_app/domain/model/photo.dart';
 import 'package:image_search_app/presentation/home/home_view_model.dart';
@@ -22,9 +23,9 @@ void main() {
 
 class FakePhotoApiRepository extends PhotoApiRepository {
   @override
-  Future<List<Photo>> fetch(String query) async {
+  Future<Result<List<Photo>>> fetch(String query) async {
     Future.delayed(const Duration(microseconds: 500));
-    return fakeJson.map((e) => Photo.fromJson(e)).toList();
+    return Result.success(fakeJson.map((e) => Photo.fromJson(e)).toList());
   }
 }
 

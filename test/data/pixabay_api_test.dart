@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_search_app/data/data_source/pixabay_api.dart';
+import 'package:image_search_app/data/data_source/result.dart';
 import 'package:image_search_app/data/repository/photo_api_repository_impl.dart';
+import 'package:image_search_app/domain/model/photo.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
@@ -26,10 +28,10 @@ void main() {
     when(mockClient.get(Uri.parse(query)))
         .thenAnswer((_) async => http.Response(fakeJsonBody, 200));
 
-    final res = await api.fetch(keyword); //테스트의 결과값
+    final Result<List<Photo>> res = await api.fetch(keyword); //테스트의 결과값
 
     //기댓값과 비교하기
-    expect(res.first.id, 8175062);
+    expect((res as Success<List<Photo>>).data.first.id, 8175062);
 
     // verify(code) : code가 정상적으로 작동했는지 확인하는 함수
     verify(mockClient.get(Uri.parse(query)));

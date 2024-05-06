@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_search_app/presentation/home/home_view_model.dart';
 import 'package:image_search_app/presentation/home/components/photo_widget.dart';
@@ -14,11 +16,34 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _controller = TextEditingController(); //에딧 텍스트의 값을 얻아올 수 있는 Controller
+  StreamSubscription? _streamSubscription;
 
   @override
   void dispose() {
+    _streamSubscription?.cancel();
     _controller.dispose(); //다 쓰고 나서는 해제 해줘야함
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    /// [Future.microtask()]
+    /// StatefulWidget에서 뷰모델을 가져오는데 약간의 시간이 필요해서, 일정시간의 대기를 가지고 블록 내부의 구문을 실행함.
+    Future.microtask(() {
+
+      final viewModel = context.read<HomeViewModel>(); //단발성이라 watch대신 read사용
+      _streamSubscription = viewModel.eventStream.listen((event) {
+        event.when(
+          showSnackBar: (message) {
+            final snackBar = SnackBar(
+              content: Text(message),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar); //스낵바 띄우기
+          },
+        );
+      });
+    });
   }
 
   @override
