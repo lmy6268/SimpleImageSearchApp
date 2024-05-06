@@ -28,10 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     /// [Future.microtask()]
     /// StatefulWidget에서 뷰모델을 가져오는데 약간의 시간이 필요해서, 일정시간의 대기를 가지고 블록 내부의 구문을 실행함.
     Future.microtask(() {
-
       final viewModel = context.read<HomeViewModel>(); //단발성이라 watch대신 read사용
       _streamSubscription = viewModel.eventStream.listen((event) {
         event.when(
@@ -52,6 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
     // 요즘 방식
     // -> 데이터의 변동이 있는지 여부도 확인한다. (지금은 Stream으로 데이터를 제공하고 있어서 watch가 아닌, read로 해도 된다.)
     final homeViewModel = context.watch<HomeViewModel>();
+    final state = homeViewModel.state;
+
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true, //가운데 정렬
@@ -78,23 +81,26 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: homeViewModel.photos.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // 몇 열로 구성하는 지
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemBuilder: (buildContext, index) {
-                final Photo photo = homeViewModel.photos[index];
-                return PhotoWidget(
-                  photo: photo,
-                );
-              },
-            ),
-          )
+          state.isLoading
+              ? const CircularProgressIndicator()
+              : Expanded(
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: state.photos.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // 몇 열로 구성하는 지
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemBuilder: (buildContext, index) {
+                      final Photo photo = state.photos[index];
+                      return PhotoWidget(
+                        photo: photo,
+                      );
+                    },
+                  ),
+                ),
         ],
       ),
     );

@@ -17,7 +17,7 @@ void main() {
     await viewModel.fetch('apple');
 
     //기대값과 실제값 확인하기
-    expect(viewModel.photos, res);
+    expect(viewModel.state.photos, res);
   });
 }
 
