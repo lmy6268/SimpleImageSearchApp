@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:image_search_app/data/repository/photo_api_repository_impl.dart';
 import 'package:image_search_app/domain/repository/photo_api_repository.dart';
+import 'package:image_search_app/domain/use_case/get_photos_use_case.dart';
 import 'package:image_search_app/presentation/home/home_state.dart';
 import 'package:image_search_app/presentation/home/home_ui_event.dart';
 
@@ -12,7 +13,7 @@ import '../../domain/model/photo.dart';
 
 //with 키워드는 의미상 MixIn 기능을 사용할 때 사용한다. -> 상속이랑 의미가 거의 동일하다.
 class HomeViewModel with ChangeNotifier {
-  final PhotoApiRepository repo;
+  final GetPhotosUseCase getPhotosUseCase;
   HomeState _state = HomeState([], false);
 
   HomeState get state => _state;
@@ -26,13 +27,14 @@ class HomeViewModel with ChangeNotifier {
   // //외부에서는 이 컨트롤러를 통해 데이터 상태의 변화를 감지한다.
   // Stream<List<Photo>> get photoStream => _photoStreamController.stream;
 
-  HomeViewModel(this.repo);
+  HomeViewModel(this.getPhotosUseCase);
 
   //Async이기 때문에 결과값은 Future 클래스의 인스턴스로 반환된다.
   Future<void> fetch(String query) async {
     _state = state.copyWith(isLoading: true);
     notifyListeners(); //상태가 변했음을 알려주어야 한다.
-    final Result<List<Photo>> result = await repo.fetch(query);
+
+    final Result<List<Photo>> result = await getPhotosUseCase(query);
     result.when(
       success: (photos) {
         _state = state.copyWith(photos: photos);

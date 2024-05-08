@@ -4,13 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image_search_app/data/data_source/result.dart';
 import 'package:image_search_app/domain/repository/photo_api_repository.dart';
 import 'package:image_search_app/domain/model/photo.dart';
+import 'package:image_search_app/domain/use_case/get_photos_use_case.dart';
 import 'package:image_search_app/presentation/home/home_view_model.dart';
 
 void main() {
   test('Stream이 잘 동작해야 한다', () async {
     //API에 의존하고 있는 상태 -> 만약 API가 동작하지 않는다면 테스트도 정상적으로 되지 않을 것이다.
     //의존되는 부분 -> 인터페이스로 전환
-    final viewModel = HomeViewModel(FakePhotoApiRepository());
+    final viewModel = HomeViewModel(GetPhotosUseCase(FakePhotoApiRepository()));
 
     final res = fakeJson.map((e) => Photo.fromJson(e)).toList();
 
